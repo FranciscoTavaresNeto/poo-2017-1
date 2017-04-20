@@ -25,3 +25,12 @@ local.properties
 .buildpath
 .recommenders
 
+/09-objetos-heranca/nbproject/private/
+/09-objetos-heranca/build/
+
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
