@@ -1,5 +1,5 @@
 package pkg10.interfaces;
 
-class CedulaIndisponivelException extends Exception {
+public class CedulaIndisponivelException extends Exception {
     
 }

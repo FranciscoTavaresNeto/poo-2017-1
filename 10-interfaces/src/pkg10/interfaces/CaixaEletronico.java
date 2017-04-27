@@ -11,18 +11,21 @@ public class CaixaEletronico implements ICaixaEletronico {
 
     @Override
     public int getQuantidade(Cedula cedula) {
+        if (cedula == Cedula.Dez) return dez;
         return 0;
     }
 
     @Override
     public int getSaldo() {
-        return 0;
+        int saldo = 0;
+        saldo += dez * 10;
+        return saldo;
     }
 
     @Override
     public void saque(int valor) throws CedulaIndisponivelException, SaldoInsuficienteException {
-        
+        if (valor > getSaldo()) throw new SaldoInsuficienteException();        
+        if (valor % 10 == 0) dez -= valor / 10;                    
     }
-
     
 }
