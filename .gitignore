@@ -35,3 +35,4 @@ dist/
 nbdist/
 .nb-gradle/
 /10-interfaces/nbproject/private/
+/11-towerdefense/nbproject/private/

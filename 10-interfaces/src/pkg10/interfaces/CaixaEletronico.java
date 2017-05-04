@@ -1,31 +1,45 @@
 package pkg10.interfaces;
 
 public class CaixaEletronico implements ICaixaEletronico {
-
-    private int dez = 0;
+    
+    // TODO: extrair a lógica da chave/valor
+    
+    // chave
+    private Cedula[] cedulas = Cedula.values();
+    // valor
+    private int[] quantidades = new int[Cedula.values().length];
     
     @Override
     public void abastece(int quantidade, Cedula cedula) {
-        if (cedula == Cedula.Dez) dez += quantidade;
+        for (int i = 0; i < cedulas.length; i++) {
+            if (cedulas[i] == cedula) {
+                quantidades[i] += quantidade;
+                break;
+            }
+        }
     }
 
     @Override
     public int getQuantidade(Cedula cedula) {
-        if (cedula == Cedula.Dez) return dez;
+        for (int i = 0; i < cedulas.length; i++) 
+            if (cedulas[i] == cedula) 
+                return quantidades[i];
         return 0;
     }
 
     @Override
     public int getSaldo() {
         int saldo = 0;
-        saldo += dez * 10;
+        for (int i = 0; i < cedulas.length; i++) {
+            saldo += quantidades[i] * cedulas[i].valor;
+        }
         return saldo;
     }
 
     @Override
     public void saque(int valor) throws CedulaIndisponivelException, SaldoInsuficienteException {
         if (valor > getSaldo()) throw new SaldoInsuficienteException();        
-        if (valor % 10 == 0) dez -= valor / 10;                    
+        // TODO: fazer sacar!
     }
     
 }
