@@ -1,10 +1,10 @@
 package pkg15;
 
-class Pedido {
+public class Pedido {
 
-    private final IList<Produto> lista;
+    private final IList<Venda> lista;
 
-    public Pedido(IList<Produto> lista) {
+    public Pedido(IList<Venda> lista) {
         this.lista = lista;
     }
     

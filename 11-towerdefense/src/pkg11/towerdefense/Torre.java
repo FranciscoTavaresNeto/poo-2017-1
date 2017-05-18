@@ -2,10 +2,7 @@ package pkg11.towerdefense;
 
 public class Torre {
 
-    private final int x;
-    private final int y;
-    private final int dano;
-    private final int alcance;
+    private final int x, y, dano, alcance;
 
     public Torre(int x, int y, int dano, int alcance) {
         this.x = x;
@@ -14,17 +11,10 @@ public class Torre {
         this.alcance = alcance;
     }
 
-    @Override
-    public String toString() {
-        return "Torre{" + "x=" + x + ", y=" + y + ", dano=" + dano + ", alcance=" + alcance + '}';
+    public void ataca(IList<Inimigo> inimigosPossiveis) {
+        inimigosPossiveis.getFirst().sofreDano(this.dano);
     }
-
-    public void ataca(Inimigo inimigo) {
-        if (alcanca(inimigo)) {
-            inimigo.sofreDano(this.dano);
-        }
-    }
-
+        
     public boolean alcanca(Inimigo inimigo) {
         int dx = inimigo.getX() - this.x;
         int dy = inimigo.getY() - this.y;
@@ -32,6 +22,12 @@ public class Torre {
         return distancia <= this.alcance;
     }
    
+    @Override
+    public String toString() {
+        return "Torre{" + "x=" + x + ", y=" + y + ", dano=" + dano + ", alcance=" + alcance + '}';
+    }
+    
+
 }
 
 
