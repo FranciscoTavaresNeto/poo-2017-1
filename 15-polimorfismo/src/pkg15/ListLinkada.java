@@ -1,4 +1,4 @@
-package pkg14;
+package pkg15;
 
 /**
  *
@@ -142,6 +142,11 @@ public class ListLinkada implements IList {
             i++;
         }
         return -1;                
+    }
+
+    @Override
+    public void replace(Object o, int index) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     private class No {
