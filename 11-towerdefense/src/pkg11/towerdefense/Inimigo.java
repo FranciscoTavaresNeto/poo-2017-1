@@ -1,16 +1,11 @@
 package pkg11.towerdefense;
 
-public class Inimigo {
+public class Inimigo extends Peca {
 
-    private final int x;
-    private final int y;
-    private final int dano;
     private int vida;
 
     public Inimigo(int x, int y, int dano, int vida) {
-        this.x = x;
-        this.y = y;
-        this.dano = dano;
+        super(x, y, dano);
         this.vida = vida;
     }
 

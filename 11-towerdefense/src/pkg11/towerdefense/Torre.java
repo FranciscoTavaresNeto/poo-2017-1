@@ -1,13 +1,11 @@
 package pkg11.towerdefense;
 
-public class Torre {
+public class Torre extends Peca {
 
-    private final int x, y, dano, alcance;
+    public final int alcance;
 
     public Torre(int x, int y, int dano, int alcance) {
-        this.x = x;
-        this.y = y;
-        this.dano = dano;
+        super(x, y, dano);
         this.alcance = alcance;
     }
 
@@ -15,12 +13,11 @@ public class Torre {
         inimigosPossiveis.getFirst().sofreDano(this.dano);
     }
         
-    public boolean alcanca(Inimigo inimigo) {
-        int dx = inimigo.getX() - this.x;
-        int dy = inimigo.getY() - this.y;
-        double distancia = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));        
-        return distancia <= this.alcance;
+    public boolean alcanca(Inimigo inimigo) {        
+        return distancia(inimigo) <= this.alcance;
     }
+    
+    
    
     @Override
     public String toString() {

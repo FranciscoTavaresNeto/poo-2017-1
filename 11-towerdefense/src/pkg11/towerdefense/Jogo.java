@@ -9,12 +9,12 @@ public class Jogo {
     public Jogo(int largura, int altura) {
         this.grid = new Grid(largura, altura);
     }
-
-    public void adicionaTorre(int x, int y, int dano, int alcance) {
-       if (x >= grid.largura) throw new IllegalArgumentException();
-       if (y >= grid.altura) throw new IllegalArgumentException();
+    
+    public void adicionaTorre(Torre t) {
+       if (t.x >= grid.largura) throw new IllegalArgumentException();
+       if (t.y >= grid.altura) throw new IllegalArgumentException();
        
-       torres.append(new Torre(x, y, dano, alcance));
+       torres.append(t);
     }
 
     public void adicionaInimigo(int x, int y, int dano, int vida) {
