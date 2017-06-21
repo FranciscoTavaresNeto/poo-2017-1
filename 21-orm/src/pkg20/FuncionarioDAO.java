@@ -19,9 +19,19 @@ public class FuncionarioDAO {
             Connection conexao = DriverManager.getConnection(url, user, password);
 
             // instrução
-            String sql = "INSERT INTO funcionarios VALUES ("
+            String sql;
+            
+            if (f.getCodigo() == null) {
+                sql = "INSERT INTO funcionarios VALUES ("
                     + "DEFAULT, ?, ?, ?, ?, ?, ?, ?);"; // ? é um placeholder
-
+            } else {
+                sql = "UPDATE funcionarios SET " 
+                    + "nome = ?, cpf = ?, data_nascimento = ?,"
+                    + "genero = ?, salario = ?, atualizacao = ?,"
+                    + "foto = ? WHERE codigo = ?";
+            }
+                
+                
             // criar um objeto comando
             PreparedStatement comando
                     = conexao.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -66,6 +76,10 @@ public class FuncionarioDAO {
             } else {
                 comando.setNull(7, Types.ARRAY);
             }
+            
+            if (f.getCodigo() != null) {
+                comando.setInt(8, f.getCodigo()); // WHERE
+            }
 
             // envia o comando (executa de fato)
             comando.execute();
@@ -79,6 +93,10 @@ public class FuncionarioDAO {
             }
             // --------------
 
+            // salvar os relacionados (composição)
+            
+            salvarPontos(conexao, f);
+            
             // fechar a conexão
             conexao.close();
 
@@ -144,6 +162,23 @@ public class FuncionarioDAO {
         }
 
         return f;
+    }
+
+    private void salvarPontos(Connection conexao, Funcionario f) throws SQLException {
+        for (Ponto p : f.getPontos()) {
+            if (p.getCodigo() == null) {
+                salvaPonto(conexao, p, f.getCodigo());
+            }
+        }
+    }
+
+    private void salvaPonto(Connection conexao, Ponto p, int fk) throws SQLException {
+        String sql = "INSERT INTO pontos VALUES (DEFAULT, ?, ?, ?)";
+        PreparedStatement comando = conexao.prepareStatement(sql);
+        comando.setTimestamp(1, Timestamp.valueOf(p.getEntrada()));
+        comando.setTimestamp(2, Timestamp.valueOf(p.getSaida()));
+        comando.setInt(3, fk);
+        comando.execute();
     }
 
 }
