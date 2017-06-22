@@ -4,31 +4,26 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import pkg20.Funcionario.Genero;
 
-public class FuncionarioDAO {
-
-    private static final String url
-            = "jdbc:postgresql://10.132.214.1/poomarcio";
-    private static final String user = "aluno";
-    private static final String password = "aluno";
+public class FuncionarioDAO extends DAO {
 
     public void salvar(Funcionario f) {
 
         try {
 
             // abre a conexão
-            Connection conexao = DriverManager.getConnection(url, user, password);
+            Connection conexao = abrirConexao();
 
             // instrução
             String sql;
             
             if (f.getCodigo() == null) {
                 sql = "INSERT INTO funcionarios VALUES ("
-                    + "DEFAULT, ?, ?, ?, ?, ?, ?, ?);"; // ? é um placeholder
+                    + "DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?);"; // ? é um placeholder
             } else {
                 sql = "UPDATE funcionarios SET " 
                     + "nome = ?, cpf = ?, data_nascimento = ?,"
                     + "genero = ?, salario = ?, atualizacao = ?,"
-                    + "foto = ? WHERE codigo = ?";
+                    + "foto = ?, cod_departamento = ? WHERE codigo = ?";
             }
                 
                 
@@ -77,8 +72,18 @@ public class FuncionarioDAO {
                 comando.setNull(7, Types.ARRAY);
             }
             
+            if (f.getDepartamento() != null) {
+                if (f.getDepartamento().getCodigo() == null) {
+                    DepartamentoDAO ddao = new DepartamentoDAO();
+                    ddao.salvar(f.getDepartamento());
+                }                    
+                comando.setInt(8, f.getDepartamento().getCodigo());
+            } else {
+                comando.setNull(8, Types.INTEGER);
+            }
+            
             if (f.getCodigo() != null) {
-                comando.setInt(8, f.getCodigo()); // WHERE
+                comando.setInt(9, f.getCodigo()); // WHERE
             }
 
             // envia o comando (executa de fato)
@@ -109,7 +114,7 @@ public class FuncionarioDAO {
     public void excluir(int codigo) {
         
         try {
-            Connection conexao = DriverManager.getConnection(url, user, password);
+            Connection conexao = abrirConexao();
             
             String sql = "DELETE FROM funcionarios WHERE codigo = ?";
 
@@ -131,7 +136,7 @@ public class FuncionarioDAO {
         Funcionario f = null;
 
         try {
-            Connection conexao = DriverManager.getConnection(url, user, password);
+            Connection conexao = abrirConexao();
             
             String sql = "SELECT * FROM funcionarios WHERE codigo = ?";
 
@@ -153,6 +158,13 @@ public class FuncionarioDAO {
                 f.setSalario(result.getDouble("salario"));
                 f.setUltimaAtualizacao(
                         result.getTimestamp("atualizacao").toLocalDateTime());
+                
+                int codDepartamento = result.getInt("cod_departamento");
+                if (codDepartamento != 0) { // carregar o departamento
+                    DepartamentoDAO ddao = new DepartamentoDAO();
+                    Departamento dep = ddao.buscaCodigo(codDepartamento);
+                    dep.alocar(f);
+                }                
             }
 
             conexao.close();
@@ -162,6 +174,35 @@ public class FuncionarioDAO {
         }
 
         return f;
+    }
+    
+    public void carregaFuncionarios(Departamento d) {
+
+        try {
+            Connection conexao = abrirConexao();            
+            String sql = "SELECT * FROM funcionarios "
+                       + "WHERE cod_departamento = ?";
+            PreparedStatement comando = conexao.prepareStatement(sql);            
+            comando.setInt(1, d.getCodigo());
+            ResultSet result = comando.executeQuery();            
+            while (result.next()) {
+                Funcionario f = new Funcionario();
+                f.setCodigo(result.getInt("codigo"));
+                f.setCpf(result.getString("cpf"));
+                f.setDataNascimento(
+                        result.getDate("data_nascimento").toLocalDate());
+                f.setFoto(result.getBytes("foto"));
+                f.setGenero(Genero.values()[result.getInt("genero")]);
+                f.setNome(result.getString("nome"));
+                f.setSalario(result.getDouble("salario"));
+                f.setUltimaAtualizacao(
+                        result.getTimestamp("atualizacao").toLocalDateTime());
+                d.alocar(f);
+            }
+            conexao.close();
+        } catch (SQLException sqle) {
+            throw new RuntimeException("Erro no Banco", sqle);
+        }
     }
 
     private void salvarPontos(Connection conexao, Funcionario f) throws SQLException {
@@ -180,5 +221,7 @@ public class FuncionarioDAO {
         comando.setInt(3, fk);
         comando.execute();
     }
+    
+    
 
 }

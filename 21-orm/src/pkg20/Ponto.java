@@ -2,9 +2,9 @@ package pkg20;
 
 import java.time.*;
 
-public class Ponto {
+public class Ponto extends Entidade {
 
-    private Integer codigo;
+    
     private LocalDateTime entrada, saida;
 
     public Ponto(LocalDateTime entrada, LocalDateTime saida) {
@@ -12,13 +12,6 @@ public class Ponto {
         this.saida = saida;
     }
 
-    public Integer getCodigo() {
-        return codigo;
-    }
-
-    public void setCodigo(Integer codigo) {
-        this.codigo = codigo;
-    }
 
     public LocalDateTime getEntrada() {
         return entrada;

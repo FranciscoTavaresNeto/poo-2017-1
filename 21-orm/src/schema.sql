@@ -36,13 +36,20 @@ FROM pontos p
 JOIN funcionarios f
 ON p.cod_funcionario = f.codigo;
 
+CREATE TABLE departamentos (
+    codigo SERIAL        PRIMARY KEY,
+    nome   VARCHAR(20)   NOT NULL
+);
 
+INSERT INTO departamentos (nome) 
+VALUES ('RH'), ('Vendas'), ('Gerência');
 
+ALTER TABLE funcionarios
+ADD COLUMN cod_departamento INTEGER
+REFERENCES departamentos (codigo)
+ON DELETE SET NULL;
 
-
-
-
-
+SELECT * FROM departamentos;
 
 
 

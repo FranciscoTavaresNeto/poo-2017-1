@@ -3,8 +3,26 @@ package pkg20;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Objects;
 
-public final class Funcionario { // não pode ser estendida
+public final class Funcionario extends Entidade { // não pode ser estendida
+    
+    private Departamento departamento;
+
+    public Departamento getDepartamento() {
+        return departamento;
+    }
+
+    public void setDepartamento(Departamento departamento) {
+        this.departamento = departamento;
+    }
+    
+    public void desalocar() {
+        if (departamento == null) return;
+        
+        this.departamento.getFuncionarios().remove(this);
+        this.departamento = null;
+    }
     
     private ArrayList<Ponto> 
             pontos = new ArrayList();
@@ -24,8 +42,7 @@ public final class Funcionario { // não pode ser estendida
         Masculino, Feminino
     }
     
-    // Integer em vez int (porque é anulável)
-    private Integer codigo; // PK // INTEGER/INT
+    
     // Double em vez double
     private Double salario; // DOUBLE/NUMERIC
     
@@ -42,13 +59,6 @@ public final class Funcionario { // não pode ser estendida
     private byte[] foto; // BLOB (Binary Large OBject)
 
     
-    public Integer getCodigo() {
-        return codigo;
-    }
-
-    public void setCodigo(Integer codigo) {
-        this.codigo = codigo;
-    }
 
     public Double getSalario() {
         return salario;
@@ -110,5 +120,32 @@ public final class Funcionario { // não pode ser estendida
     public String toString() {
         return "Funcionario{" + "codigo=" + codigo + ", salario=" + salario + ", nome=" + nome + ", cpf=" + cpf + ", dataNascimento=" + dataNascimento + ", ultimaAtualizacao=" + ultimaAtualizacao + ", genero=" + genero + ", foto=" + foto + '}';
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 41 * hash + Objects.hashCode(this.cpf);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Funcionario other = (Funcionario) obj;
+        if (!Objects.equals(this.cpf, other.cpf)) {
+            return false;
+        }
+        return true;
+    }
+    
+    
     
 }
